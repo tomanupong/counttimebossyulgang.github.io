@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown Timer with Vue.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Countdown Timer Boss Yulgang</h1>
+        <div >
+            <span style="cursor: pointer;" v-for="v,index in list_boss" @click="select_boss(v)">
+                {{index + 1}} : {{v.map}}<br>
+            </span>
+        </div><br>
+        <span>BOSS : {{detail_boss.map}}</span><br>
+        <label for="hours">Hours:</label>
+        <input type="number" v-model="hours" min="0" value="0">
+        <label for="minutes">Minutes:</label>
+        <input type="number" v-model="minutes" min="0" value="0">
+        <label for="seconds">Seconds:</label>
+        <input type="number" v-model="seconds" min="0" value="0">
+        <button @click="startCountdown">Set Countdown</button>
+        <button @click="clear_data()"> Clear Data</button>
+        <h4>
+            BOSS Coming
+        </h4>
+        <div v-for="v,index in data_time_boss">
+            <input type="checkbox"> 
+            <label>{{v.detail_boss.map}} {{v.countdownDisplay}}</label>
+            <label @click="clear_data_select(index)" style="color: white;cursor: pointer;background-color: red;"> Del </label>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                detail: '',
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+                countdownDisplay: '',
+                endTime: '',
+                data_time_boss : [],
+                detail_boss: '',
+                list_boss:[
+                    {map:"หมาป่า วังเย็น 1 ป 1"},
+                    {map:"หมาป่า ป่าใต้ ซ่อน 1"},
+                    {map:"คิงคอง 100 วังเย็น 2 ป"},
+                    {map:"คิงคอง 100 ป่าใต้ ซ่อน"},
+                    {map:"ขุนพล วังเย็น 3 ป 1"},
+                    {map:"ขุนพล ราชาซอมบี่ 105 ราบสูง ซ่อน"},
+                    {map:"ราชาซอมบี่ ป่าใต้ ป 1"},
+                    {map:"คิงคอง ป่าใต้ 2 ป"}
+                ]
+            },
+            mounted() {
+                this.get_time_data();
+            },
+            methods: {
+                clear_data_select(index){
+                    this.data_time_boss.splice(index, 1);
+                },
+                get_time_data() {
+                    var get_data = localStorage.getItem("datatime") || []
+                    this.data_time_boss = get_data
+                },
+                select_boss(v){
+                    this.detail_boss = v
+                },
+                clear_data(){
+                    this.data_time_boss = []
+                },
+                startCountdown() {
+                    const that = this;
+                    var tmp_data = {}
+                    var hours = this.hours;
+                    var minutes = this.minutes;
+                    var seconds = this.seconds;
+                    
+                    var now = new Date();
+                    var countdownTime = new Date(now.getTime() + hours*3600000 + minutes*60000 + seconds*1000);
+
+                    this.endTime = countdownTime.toLocaleTimeString();
+                    tmp_data.countdownDisplay = that.endTime
+                    tmp_data.detail_boss = that.detail_boss
+                    that.data_time_boss.push(tmp_data)
+                }
+            }
+        });
+    </script>
+</body>
+</html>
